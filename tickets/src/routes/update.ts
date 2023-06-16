@@ -30,10 +30,10 @@ router.put('/api/tickets/:id', currentUser, requireAuth, [
     }
     const retrievdTicket = await Ticket.findById(id);
     if (!retrievdTicket) {
-        console.log('I am here!')
         return next(new NotFoundError());
     }
     const { id: currentUserId } = req.currentUser!;
+
     if (currentUserId !== retrievdTicket.userId)
         return next(new NotAuthorizedError());
 
