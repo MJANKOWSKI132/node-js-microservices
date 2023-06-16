@@ -39,8 +39,10 @@ router.put('/api/tickets/:id', currentUser, requireAuth, [
 
     const { title, price } = req.body;
 
-    retrievdTicket.title = title;
-    retrievdTicket.price = price;
+    retrievdTicket.set({
+        title,
+        price
+    })
 
     await retrievdTicket.save();
 
