@@ -1,23 +1,19 @@
 import { ValidationError } from 'express-validator';
-import { CommonErrorStructure } from './common-error-structure';
 import { CustomError } from './custom-error';
 
 export class RequestValidationError extends CustomError {
-    statusCode = 400;
+  statusCode = 400;
 
-    constructor(public errors: ValidationError[]) {
-        super('Invalid request parameters');
-        Object.setPrototypeOf(this, RequestValidationError.prototype);
-    }
+  constructor(public errors: ValidationError[]) {
+    super('Invalid request parameters');
 
-    serializeErrors(): CommonErrorStructure[] {
-        return this.errors
-            .map(error => {
-                if (error.param === '_error') {
-                    return { message: error.msg, field: error.location } as CommonErrorStructure;
-                }
-                return undefined;
-            })
-            .filter((item): item is CommonErrorStructure => item !== undefined);
-    }
+    // Only because we are extending a built in class
+    Object.setPrototypeOf(this, RequestValidationError.prototype);
+  }
+
+  serializeErrors() {
+    return this.errors.map(err => {
+      return { message: err.msg, field: err.param };
+    });
+  }
 }

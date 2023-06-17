@@ -1,19 +1,15 @@
-import { CommonErrorStructure } from "./common-error-structure";
-import { CustomError } from "./custom-error";
+import { CustomError } from './custom-error';
 
 export class BadRequestError extends CustomError {
-    statusCode = 400;
+  statusCode = 400;
 
-    constructor(public message: string) {
-        super(message);
-        Object.setPrototypeOf(this, BadRequestError.prototype);
-    }
+  constructor(public message: string) {
+    super(message);
 
-    serializeErrors(): CommonErrorStructure[] {
-        return [
-            {
-                message: this.message
-            }
-        ];
-    } 
+    Object.setPrototypeOf(this, BadRequestError.prototype);
+  }
+
+  serializeErrors() {
+    return [{ message: this.message }];
+  }
 }
