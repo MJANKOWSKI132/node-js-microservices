@@ -10,6 +10,8 @@ import express, { NextFunction, Request, Response } from 'express';
 import { body } from 'express-validator';
 import { Ticket } from '../models/ticket';
 import mongoose from 'mongoose';
+import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -45,7 +47,13 @@ router.put('/api/tickets/:id', currentUser, requireAuth, [
     })
 
     await retrievdTicket.save();
-
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+        id: retrievdTicket.id,
+        version: -1,
+        price: retrievdTicket.price,
+        userId: retrievdTicket.userId,
+        title: retrievdTicket.title
+    });
     res.status(200).send(retrievdTicket);
 })
 
