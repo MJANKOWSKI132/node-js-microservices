@@ -34,6 +34,8 @@ router.put('/api/tickets/:id', currentUser, requireAuth, [
     if (!retrievdTicket) {
         return next(new NotFoundError());
     }
+    if (retrievdTicket.orderId)
+        return next(new BadRequestError('Cannot update this ticket as it is reserved!'))
     const { id: currentUserId } = req.currentUser!;
 
     if (currentUserId !== retrievdTicket.userId)
@@ -49,7 +51,7 @@ router.put('/api/tickets/:id', currentUser, requireAuth, [
     await retrievdTicket.save();
     new TicketUpdatedPublisher(natsWrapper.client).publish({
         id: retrievdTicket.id,
-        version: -1,
+        version: retrievdTicket.version,
         price: retrievdTicket.price,
         userId: retrievdTicket.userId,
         title: retrievdTicket.title

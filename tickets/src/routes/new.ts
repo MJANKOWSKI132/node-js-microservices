@@ -35,7 +35,7 @@ router.post('/api/tickets', currentUser, requireAuth, [
         title: newTicket.title,
         price: newTicket.price,
         userId: newTicket.userId,
-        version: -1
+        version: newTicket.version
     })
     res.status(201).send(newTicket);
 })
