@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { Order } from '../../models/order';
 import { OrderStatus } from '@cygnetops/common';
 import { stripe } from '../../stripe';
+import { Payment } from '../../models/payment';
 
 const generateId = () => new mongoose.Types.ObjectId().toHexString();
 
