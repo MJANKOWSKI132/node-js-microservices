@@ -14,6 +14,10 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
             .populate('ticket');
         if (!order)
             throw new Error(`No order with ID: ${data.orderId} exists`);
+        if (order.status === OrderStatus.Complete) {
+            msg.ack();
+            return;
+        }
         order.set({
             status: OrderStatus.Cancelled
         })
