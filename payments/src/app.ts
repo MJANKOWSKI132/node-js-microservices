@@ -2,7 +2,8 @@ import express from "express";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 
-import { errorHandler, NotFoundError } from "@cygnetops/common";
+import { currentUser, errorHandler, NotFoundError } from "@cygnetops/common";
+import { createChargeRouter } from "./routes/new";
 
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
 
@@ -16,6 +17,9 @@ app.use(
     secure: process.env.NODE_ENV !== 'test'
   })
 );
+app.use(currentUser);
+
+app.use(createChargeRouter);
 
 app.all('*', async (req, res, next) => {
   next(new NotFoundError());

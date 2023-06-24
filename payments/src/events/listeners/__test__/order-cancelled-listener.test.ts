@@ -19,8 +19,8 @@ const setup = async () => {
     await order.save();
 
     const data = {
-        id: new mongoose.Types.ObjectId().toHexString(),
-        version: 1,
+        id: order.id,
+        version: order.version + 1,
         ticket: {
             id: new mongoose.Types.ObjectId().toHexString()
         }
@@ -49,10 +49,7 @@ it('should set the status of the order to cancelled', async () => {
 
     await listener.onMessage(data, msg);
 
-    const matchingOrder = await Order.findOne({
-        _id: order.id,
-        version: data.version - 1
-    })
+    const matchingOrder = await Order.findById(order.id);
 
     expect(matchingOrder!.status).toEqual(OrderStatus.Cancelled);
 })

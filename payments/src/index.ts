@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { app } from './app';
 import { natsWrapper } from './nats-wrapper';
+import { OrderCancelledListener } from './events/listeners/order-cancelled-listener';
+import { OrderCreatedListener } from './events/listeners/order-created-listener';
 
 const start = async () => {
   try {
@@ -31,6 +33,9 @@ const start = async () => {
     
     await mongoose.connect(process.env.MONGO_URI);
 
+    new OrderCancelledListener(natsWrapper.client).listen();
+    new OrderCreatedListener(natsWrapper.client).listen();
+    
     app.listen(3000, () => {
       console.log("Tickets server listening on port 3000!!!");
     });
